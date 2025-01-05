@@ -15,18 +15,17 @@ jobs:
     container:
       image: zaoqi/archlinux:latest
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: true
     - name: Get current date
       id: date
       run: echo "stamp=$(date '+%s')" >> $GITHUB_ENV
     - name: Install tools
       run: sudo pacman -Sy ; sudo pacman -S python-is-python3 python3-pip git -y
     - name: Install pmbootstrap
-      run: git clone https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git ; cd pmbootstrap ; mkdir -p ~/.local/bin ; ln -s "$PWD/pmbootstrap.py" ~/.local/bin/pmbootstrap
+      run: git clone https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git ; cd pmbootstrap ; mkdir -p ~/.local/bin ; ln -s "$PWD/pmbootstrap.py" ~/.local/bin/pmbootstrap ; cd ~
     - name: Create work directory
       run: mkdir -p /home/runner/.local/var/pmbootstrap
+    - name: update pmaports 
+      run: cd pmbootstrap/cache_git ; git clone https://gitlab.postmarketos.org/postmarketOS/pmaports.git
     - name: Update pmbootstrap
       run: pmbootstrap -c configs/pmbootstrap.${{ matrix.arch }}.cfg -y -p pmbootstrap/cache_git/pmaports/ pull
     - name: pmbootstrap install
